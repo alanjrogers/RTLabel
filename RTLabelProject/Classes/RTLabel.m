@@ -921,10 +921,12 @@
 					NSString *key = [[pair objectAtIndex:0] lowercaseString];
 					
 					if ([pair count]>=2) {
-						// Trim " charactere
+						// Trim " character
 						NSString *value = [[pair subarrayWithRange:NSMakeRange(1, [pair count] - 1)] componentsJoinedByString:@"="];
 						value = [value stringByReplacingOccurrencesOfString:@"\"" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, 1)];
-						value = [value stringByReplacingOccurrencesOfString:@"\"" withString:@"" options:NSLiteralSearch range:NSMakeRange([value length]-1, 1)];
+                        if (value.length > 0) {
+                            value = [value stringByReplacingOccurrencesOfString:@"\"" withString:@"" options:NSLiteralSearch range:NSMakeRange([value length]-1, 1)];
+                        }
 						
 						[attributes setObject:value forKey:key];
 					} else if ([pair count]==1) {
