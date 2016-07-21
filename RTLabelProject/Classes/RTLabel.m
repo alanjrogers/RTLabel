@@ -38,7 +38,7 @@
 #import "RTLabel.h"
 
 @interface RTLabelButton : UIButton
-@property (nonatomic, assign) int componentIndex;
+@property (nonatomic, assign) NSUInteger componentIndex;
 @property (nonatomic) NSURL *url;
 @end
 
@@ -63,7 +63,7 @@
 	return [[self alloc] initWithString:aText tag:aTagLabel attributes:theAttributes];
 }
 
-- (id)initWithTag:(NSString*)aTagLabel position:(int)aPosition attributes:(NSMutableDictionary*)theAttributes 
+- (id)initWithTag:(NSString*)aTagLabel position:(NSUInteger)aPosition attributes:(NSMutableDictionary*)theAttributes
 {
     self = [super init];
     if (self) {
@@ -74,7 +74,7 @@
     return self;
 }
 
-+(id)componentWithTag:(NSString*)aTagLabel position:(int)aPosition attributes:(NSMutableDictionary*)theAttributes
++(id)componentWithTag:(NSString*)aTagLabel position:(NSUInteger)aPosition attributes:(NSMutableDictionary*)theAttributes
 {
 	return [[self alloc] initWithTag:aTagLabel position:aPosition attributes:theAttributes];
 }
@@ -114,15 +114,15 @@
 #pragma mark -
 #pragma mark styling
 
-- (void)applyItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applyBoldStyleToText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applyBoldItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applyColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applySingleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applyDoubleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applyUnderlineColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applyFontAttributes:(NSDictionary*)attributes toText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length;
-- (void)applyParagraphStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(int)position withLength:(int)length;
+- (void)applyItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applyBoldStyleToText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applyBoldItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applyColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applySingleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applyDoubleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applyUnderlineColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applyFontAttributes:(NSDictionary*)attributes toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length;
+- (void)applyParagraphStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(NSUInteger)position withLength:(NSUInteger)length;
 @end
 
 @implementation RTLabel
@@ -232,22 +232,22 @@
     
 	for (RTLabelComponent *component in textComponents)
 	{
-		int index = (int)[textComponents indexOfObject:component];
+		NSUInteger index = [textComponents indexOfObject:component];
 		component.componentIndex = index;
 		
 		if ([component.tagLabel caseInsensitiveCompare:@"i"] == NSOrderedSame)
 		{
 			// make font italic
-			[self applyItalicStyleToText:attrString atPosition:component.position withLength:(int)[component.text length]];
+			[self applyItalicStyleToText:attrString atPosition:component.position withLength:[component.text length]];
 		}
 		else if ([component.tagLabel caseInsensitiveCompare:@"b"] == NSOrderedSame)
 		{
 			// make font bold
-			[self applyBoldStyleToText:attrString atPosition:component.position withLength:(int)[component.text length]];
+			[self applyBoldStyleToText:attrString atPosition:component.position withLength:[component.text length]];
 		}
         else if ([component.tagLabel caseInsensitiveCompare:@"bi"] == NSOrderedSame)
         {
-            [self applyBoldItalicStyleToText:attrString atPosition:component.position withLength:(int)[component.text length]];
+            [self applyBoldItalicStyleToText:attrString atPosition:component.position withLength:[component.text length]];
         }
 		else if ([component.tagLabel caseInsensitiveCompare:@"a"] == NSOrderedSame)
 		{
@@ -255,24 +255,24 @@
 			{
 				if (self.selectedLinkAttributes)
 				{
-					[self applyFontAttributes:self.selectedLinkAttributes toText:attrString atPosition:component.position withLength:(int)[component.text length]];
+					[self applyFontAttributes:self.selectedLinkAttributes toText:attrString atPosition:component.position withLength:[component.text length]];
 				}
 				else
 				{
-					[self applyBoldStyleToText:attrString atPosition:component.position withLength:(int)[component.text length]];
-					[self applyColor:@"#FF0000" toText:attrString atPosition:component.position withLength:(int)[component.text length]];
+					[self applyBoldStyleToText:attrString atPosition:component.position withLength:[component.text length]];
+					[self applyColor:@"#FF0000" toText:attrString atPosition:component.position withLength:[component.text length]];
 				}
 			}
 			else
 			{
 				if (self.linkAttributes)
 				{
-					[self applyFontAttributes:self.linkAttributes toText:attrString atPosition:component.position withLength:(int)[component.text length]];
+					[self applyFontAttributes:self.linkAttributes toText:attrString atPosition:component.position withLength:[component.text length]];
 				}
 				else
 				{
-					[self applyBoldStyleToText:attrString atPosition:component.position withLength:(int)[component.text length]];
-					[self applySingleUnderlineText:attrString atPosition:component.position withLength:(int)[component.text length]];
+					[self applyBoldStyleToText:attrString atPosition:component.position withLength:[component.text length]];
+					[self applySingleUnderlineText:attrString atPosition:component.position withLength:[component.text length]];
 				}
 			}
 			
@@ -287,30 +287,30 @@
 			// underline
 			if ([component.tagLabel caseInsensitiveCompare:@"u"] == NSOrderedSame)
 			{
-				[self applySingleUnderlineText:attrString atPosition:component.position withLength:(int)[component.text length]];
+				[self applySingleUnderlineText:attrString atPosition:component.position withLength:[component.text length]];
 			}
 			else if ([component.tagLabel caseInsensitiveCompare:@"uu"] == NSOrderedSame)
 			{
-				[self applyDoubleUnderlineText:attrString atPosition:component.position withLength:(int)[component.text length]];
+				[self applyDoubleUnderlineText:attrString atPosition:component.position withLength:[component.text length]];
 			}
 			
 			if ([component.attributes objectForKey:@"color"])
 			{
 				NSString *value = [component.attributes objectForKey:@"color"];
-				[self applyUnderlineColor:value toText:attrString atPosition:component.position withLength:(int)[component.text length]];
+				[self applyUnderlineColor:value toText:attrString atPosition:component.position withLength:[component.text length]];
 			}
 		}
 		else if ([component.tagLabel caseInsensitiveCompare:@"font"] == NSOrderedSame)
 		{
-			[self applyFontAttributes:component.attributes toText:attrString atPosition:component.position withLength:(int)[component.text length]];
+			[self applyFontAttributes:component.attributes toText:attrString atPosition:component.position withLength:[component.text length]];
 		}
 		else if ([component.tagLabel caseInsensitiveCompare:@"p"] == NSOrderedSame)
 		{
-			[self applyParagraphStyleToText:attrString attributes:component.attributes atPosition:component.position withLength:(int)[component.text length]];
+			[self applyParagraphStyleToText:attrString attributes:component.attributes atPosition:component.position withLength:[component.text length]];
 		}
 		else if ([component.tagLabel caseInsensitiveCompare:@"center"] == NSOrderedSame)
 		{
-			[self applyCenterStyleToText:attrString attributes:component.attributes atPosition:component.position withLength:(int)[component.text length]];
+			[self applyCenterStyleToText:attrString attributes:component.attributes atPosition:component.position withLength:[component.text length]];
 		}
 	}
     
@@ -393,7 +393,7 @@
 #pragma mark -
 #pragma mark styling
 
-- (void)applyParagraphStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(int)position withLength:(int)length
+- (void)applyParagraphStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	CFMutableDictionaryRef styleDict = ( CFDictionaryCreateMutable( (0), 0, (0), (0) ) );
 	
@@ -494,7 +494,7 @@
     CFRelease(styleDict);
 }
 
-- (void)applyCenterStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(int)position withLength:(int)length
+- (void)applyCenterStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	CFMutableDictionaryRef styleDict = ( CFDictionaryCreateMutable( (0), 0, (0), (0) ) );
 	
@@ -539,17 +539,17 @@
     CFRelease(styleDict);
 }
 
-- (void)applySingleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applySingleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTUnderlineStyleAttributeName,  (__bridge CFNumberRef)[NSNumber numberWithInt:kCTUnderlineStyleSingle]);
 }
 
-- (void)applyDoubleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applyDoubleUnderlineText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTUnderlineStyleAttributeName,  (__bridge CFNumberRef)[NSNumber numberWithInt:kCTUnderlineStyleDouble]);
 }
 
-- (void)applyItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applyItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
     CFTypeRef actualFontRef = CFAttributedStringGetAttribute(text, position, kCTFontAttributeName, NULL);
     CTFontRef italicFontRef = CTFontCreateCopyWithSymbolicTraits(actualFontRef, 0.0, NULL, kCTFontItalicTrait, kCTFontItalicTrait);
@@ -562,7 +562,7 @@
     CFRelease(italicFontRef);
 }
 
-- (void)applyFontAttributes:(NSDictionary*)attributes toText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applyFontAttributes:(NSDictionary*)attributes toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	for (NSString *key in attributes)
 	{
@@ -631,7 +631,7 @@
 	}
 }
 
-- (void)applyBoldStyleToText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applyBoldStyleToText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
     CFTypeRef actualFontRef = CFAttributedStringGetAttribute(text, position, kCTFontAttributeName, NULL);
     CTFontRef boldFontRef = CTFontCreateCopyWithSymbolicTraits(actualFontRef, 0.0, NULL, kCTFontBoldTrait, kCTFontBoldTrait);
@@ -644,7 +644,7 @@
     CFRelease(boldFontRef);
 }
 
-- (void)applyBoldItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applyBoldItalicStyleToText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
     CFTypeRef actualFontRef = CFAttributedStringGetAttribute(text, position, kCTFontAttributeName, NULL);
     CTFontRef boldItalicFontRef = CTFontCreateCopyWithSymbolicTraits(actualFontRef, 0.0, NULL, kCTFontBoldTrait | kCTFontItalicTrait , kCTFontBoldTrait | kCTFontItalicTrait);
@@ -661,7 +661,7 @@
 
 }
 
-- (void)applyColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applyColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	
 	if ([value rangeOfString:@"#"].location==0)
@@ -686,7 +686,7 @@
 	}
 }
 
-- (void)applyUnderlineColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(int)position withLength:(int)length
+- (void)applyUnderlineColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	
 	value = [value stringByReplacingOccurrencesOfString:@"'" withString:@""];
@@ -865,7 +865,7 @@
 	
 	NSMutableArray *components = [NSMutableArray array];
 	
-	int last_position = 0;
+	NSUInteger last_position = 0;
 	scanner = [NSScanner scannerWithString:data];
 	while (![scanner isAtEnd])
     {
@@ -873,8 +873,8 @@
 		[scanner scanUpToString:@">" intoString:&text];
 		
 		NSString *delimiter = [NSString stringWithFormat:@"%@>", text];
-		int position = (int)[data rangeOfString:delimiter options:NSCaseInsensitiveSearch range:NSMakeRange(last_position, [data length] - last_position)].location;
-		if (position != (int)NSNotFound && position != -1)
+		NSUInteger position = [data rangeOfString:delimiter options:NSCaseInsensitiveSearch range:NSMakeRange(last_position, [data length] - last_position)].location;
+		if (position != NSNotFound)
 		{
            if ([delimiter rangeOfString:@"<p"].location==0)
            {
@@ -893,9 +893,9 @@
 		{
 			// end of tag
 			tag = [text substringFromIndex:2];
-			if (position != (int)NSNotFound)
+			if (position != NSNotFound)
 			{
-				for (int i=(int)([components count]-1); i>=0; i--)
+				for (int i=([components count]-1); i>=0; i--)
 				{
 					RTLabelComponent *component = [components objectAtIndex:i];
 					if (component.text==nil && [component.tagLabel isEqualToString:tag])
@@ -956,7 +956,7 @@
 	scanner = [NSScanner scannerWithString:data];
 	NSMutableDictionary *lastAttributes = nil;
 	
-	int last_position = 0;
+	NSUInteger last_position = 0;
 	while([scanner isAtEnd] == NO) 
 	{
 		//find start of tag
@@ -995,11 +995,11 @@
 		if([valid_tags containsObject:tag] == NO)
 		{
 			NSString *delimiter = [NSString stringWithFormat:@"%@>", text];
-			int position = (int)[data rangeOfString:delimiter].location;
+			NSUInteger position = [data rangeOfString:delimiter].location;
 			BOOL isEnd = [delimiter rangeOfString:@"</"].location!=NSNotFound;
-			if (position != (int)NSNotFound)
+			if (position != NSNotFound)
 			{
-				NSString *text2 = [data substringWithRange:NSMakeRange((NSUInteger)last_position, (NSUInteger)(position-last_position))];
+				NSString *text2 = [data substringWithRange:NSMakeRange(last_position, (position-last_position))];
 				if (isEnd)
 				{
 					// is inside a tag
