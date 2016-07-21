@@ -895,7 +895,7 @@
 			tag = [text substringFromIndex:2];
 			if (position != NSNotFound)
 			{
-				for (int i=([components count]-1); i>=0; i--)
+				for (NSUInteger i=([components count]-1); i>=0; i--)
 				{
 					RTLabelComponent *component = [components objectAtIndex:i];
 					if (component.text==nil && [component.tagLabel isEqualToString:tag])
