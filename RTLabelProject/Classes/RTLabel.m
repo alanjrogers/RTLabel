@@ -895,9 +895,8 @@
 			tag = [text substringFromIndex:2];
 			if (position != NSNotFound)
 			{
-				for (NSUInteger i=([components count]-1); i>=0; i--)
-				{
-					RTLabelComponent *component = [components objectAtIndex:i];
+                for (RTLabelComponent *component in components.reverseObjectEnumerator)
+                {
 					if (component.text==nil && [component.tagLabel isEqualToString:tag])
 					{
 						NSString *text2 = [data substringWithRange:NSMakeRange(component.position, position-component.position)];
