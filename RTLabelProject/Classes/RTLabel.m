@@ -5,34 +5,34 @@
 /**
  * Copyright (c) 2010 Muh Hon Cheng
  * Created by honcheng on 1/6/11.
- * 
- * Permission is hereby granted, free of charge, to any person obtaining 
- * a copy of this software and associated documentation files (the 
- * "Software"), to deal in the Software without restriction, including 
- * without limitation the rights to use, copy, modify, merge, publish, 
- * distribute, sublicense, and/or sell copies of the Software, and to 
- * permit persons to whom the Software is furnished to do so, subject 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject
  * to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be 
+ *
+ * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT 
- * WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR 
- * PURPOSE AND NONINFRINGEMENT. IN NO EVENT 
- * SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR 
- * IN CONNECTION WITH THE SOFTWARE OR 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT
+ * WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+ * SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+ * IN CONNECTION WITH THE SOFTWARE OR
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * @author 		Muh Hon Cheng <honcheng@gmail.com>
  * @copyright	2011	Muh Hon Cheng
  * @version
- * 
+ *
  */
 
 #import "RTLabel.h"
@@ -139,7 +139,7 @@
 
 
 - (id)initWithCoder:(NSCoder *)aDecoder
-{    
+{
     self = [super initWithCoder:aDecoder];
     if (self)
 	{
@@ -160,7 +160,7 @@
 	_lineSpacing = 3;
 	_currentSelectedButtonComponentIndex = -1;
 	_paragraphReplacement = @"\n";
-	
+
 	[self setMultipleTouchEnabled:YES];
 }
 
@@ -176,7 +176,7 @@
 	[self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect 
+- (void)drawRect:(CGRect)rect
 {
 	[self render];
 }
@@ -193,9 +193,9 @@
 			}
 		}
 	}
-	
+
     if (!self.plainText) return;
-	
+
     CGContextRef context = UIGraphicsGetCurrentContext();
     if (context != NULL)
     {
@@ -204,37 +204,37 @@
         CGAffineTransform flipVertical = CGAffineTransformMake(1,0,0,-1,0,self.frame.size.height);
         CGContextConcatCTM(context, flipVertical);
     }
-	
+
 	// Initialize an attributed string.
 	CFStringRef string = (__bridge CFStringRef)self.plainText;
 	CFMutableAttributedStringRef attrString = CFAttributedStringCreateMutable(kCFAllocatorDefault, (long)0);
 	CFAttributedStringReplaceString (attrString, CFRangeMake(0, 0), string);
-	
+
 	CFMutableDictionaryRef styleDict1 = ( CFDictionaryCreateMutable( (0), 0, (0), (0) ) );
 	// Create a color and add it as an attribute to the string.
 	CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
 	CGColorSpaceRelease(rgbColorSpace);
 	CFDictionaryAddValue( styleDict1, kCTForegroundColorAttributeName, [self.textColor CGColor] );
-	CFAttributedStringSetAttributes( attrString, CFRangeMake( 0, CFAttributedStringGetLength(attrString) ), styleDict1, 0 ); 
-	
+	CFAttributedStringSetAttributes( attrString, CFRangeMake( 0, CFAttributedStringGetLength(attrString) ), styleDict1, 0 );
+
 	CFMutableDictionaryRef styleDict = ( CFDictionaryCreateMutable( (0), (NSUInteger)0, (0), (0) ) );
-	
+
 	[self applyParagraphStyleToText:attrString attributes:nil atPosition:0 withLength:(int)CFAttributedStringGetLength(attrString)];
-	
-	
-	CTFontRef thisFont = CTFontCreateWithName ((__bridge CFStringRef)[self.font fontName], [self.font pointSize], NULL); 
+
+
+	CTFontRef thisFont = CTFontCreateWithName ((__bridge CFStringRef)[self.font fontName], [self.font pointSize], NULL);
 	CFAttributedStringSetAttribute(attrString, CFRangeMake(0, CFAttributedStringGetLength(attrString)), kCTFontAttributeName, thisFont);
-	
+
 	NSMutableArray *links = [NSMutableArray array];
 	NSMutableArray *textComponents = nil;
     if (self.highlighted) textComponents = self.highlightedTextComponents;
     else textComponents = self.textComponents;
-    
+
 	for (RTLabelComponent *component in textComponents)
 	{
 		NSUInteger index = [textComponents indexOfObject:component];
 		component.componentIndex = index;
-		
+
 		if ([component.tagLabel caseInsensitiveCompare:@"i"] == NSOrderedSame)
 		{
 			// make font italic
@@ -275,12 +275,13 @@
 					[self applySingleUnderlineText:attrString atPosition:component.position withLength:[component.text length]];
 				}
 			}
-			
-			NSString *value = [component.attributes objectForKey:@"href"];
-			value = [value stringByReplacingOccurrencesOfString:@"'" withString:@""];
-			[component.attributes setObject:value forKey:@"href"];
-			
-			[links addObject:component];
+
+			NSString *value = component.attributes[@"href"];
+			if (value != nil) {
+				value = [value stringByReplacingOccurrencesOfString:@"'" withString:@""];
+				[component.attributes setObject:value forKey:@"href"];
+				[links addObject:component];
+			}
 		}
 		else if ([component.tagLabel caseInsensitiveCompare:@"u"] == NSOrderedSame || [component.tagLabel caseInsensitiveCompare:@"uu"] == NSOrderedSame)
 		{
@@ -293,7 +294,7 @@
 			{
 				[self applyDoubleUnderlineText:attrString atPosition:component.position withLength:[component.text length]];
 			}
-			
+
 			if ([component.attributes objectForKey:@"color"])
 			{
 				NSString *value = [component.attributes objectForKey:@"color"];
@@ -313,29 +314,29 @@
 			[self applyCenterStyleToText:attrString attributes:component.attributes atPosition:component.position withLength:[component.text length]];
 		}
 	}
-    
+
     // Create the framesetter with the attributed string.
     CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(attrString);
     CFRelease(attrString);
-	
+
     // Initialize a rectangular path.
 	CGMutablePathRef path = CGPathCreateMutable();
 	CGRect bounds = CGRectMake(0.0, 0.0, self.frame.size.width, self.frame.size.height);
 	CGPathAddRect(path, NULL, bounds);
-	
+
 	// Create the frame and draw it into the graphics context
-	//CTFrameRef 
+	//CTFrameRef
     CTFrameRef frame = CTFramesetterCreateFrame(framesetter,CFRangeMake(0, 0), path, NULL);
-	
+
 	CFRange range;
 	CGSize constraint = CGSizeMake(self.frame.size.width, CGFLOAT_MAX);
 	self.optimumSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [self.plainText length]), nil, constraint, &range);
-	
-	
+
+
 	if (self.currentSelectedButtonComponentIndex==-1)
 	{
 		// only check for linkable items the first time, not when it's being redrawn on button pressed
-		
+
 		for (RTLabelComponent *linkableComponents in links)
 		{
 			CGFloat height = 0.0;
@@ -347,38 +348,38 @@
 				CGFloat ascent;
 				CGFloat descent;
 				CGFloat leading;
-				
+
 				CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
                 CGPoint origin;
 				CTFrameGetLineOrigins(frame, CFRangeMake(i, 1), &origin);
-                
+
 				if ( (linkableComponents.position<lineRange.location && linkableComponents.position+linkableComponents.text.length>(u_int16_t)(lineRange.location)) || (linkableComponents.position>=lineRange.location && linkableComponents.position<lineRange.location+lineRange.length))
 				{
 					CGFloat secondaryOffset;
 					CGFloat primaryOffset = CTLineGetOffsetForStringIndex(CFArrayGetValueAtIndex(frameLines,i), linkableComponents.position, &secondaryOffset);
 					CGFloat primaryOffset2 = CTLineGetOffsetForStringIndex(CFArrayGetValueAtIndex(frameLines,i), linkableComponents.position+linkableComponents.text.length, NULL);
-					
+
 					CGFloat button_width = primaryOffset2 - primaryOffset;
-					
+
 					RTLabelButton *button = [[RTLabelButton alloc] initWithFrame:CGRectMake(primaryOffset+origin.x, height, button_width, ascent+descent)];
-					
+
 					[button setBackgroundColor:[UIColor colorWithWhite:0 alpha:0]];
 					[button setComponentIndex:linkableComponents.componentIndex];
-					
+
 					[button setUrl:[NSURL URLWithString:[linkableComponents.attributes objectForKey:@"href"]]];
 					[button addTarget:self action:@selector(onButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
 					[button addTarget:self action:@selector(onButtonTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
 					[button addTarget:self action:@selector(onButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
                     [self addSubview:button];
-					
+
 				}
-				
+
 				origin.y = self.frame.size.height - origin.y;
 				height = origin.y + descent + _lineSpacing;
 			}
 		}
 	}
-	
+
 	self.visibleRange = CTFrameGetVisibleStringRange(frame);
 
 	CFRelease(thisFont);
@@ -396,22 +397,22 @@
 - (void)applyParagraphStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	CFMutableDictionaryRef styleDict = ( CFDictionaryCreateMutable( (0), 0, (0), (0) ) );
-	
+
 	// direction
-	CTWritingDirection direction = kCTWritingDirectionLeftToRight; 
+	CTWritingDirection direction = kCTWritingDirectionLeftToRight;
 	// leading
-	CGFloat firstLineIndent = 0.0; 
-	CGFloat headIndent = 0.0; 
-	CGFloat tailIndent = 0.0; 
-	CGFloat lineHeightMultiple = 1.0; 
-	CGFloat maxLineHeight = 0; 
-	CGFloat minLineHeight = 0; 
+	CGFloat firstLineIndent = 0.0;
+	CGFloat headIndent = 0.0;
+	CGFloat tailIndent = 0.0;
+	CGFloat lineHeightMultiple = 1.0;
+	CGFloat maxLineHeight = 0;
+	CGFloat minLineHeight = 0;
 	CGFloat paragraphSpacing = 0.0;
 	CGFloat paragraphSpacingBefore = 0.0;
 	CTTextAlignment textAlignment = (CTTextAlignment)_textAlignment;
 	CTLineBreakMode lineBreakMode = (CTLineBreakMode)_lineBreakMode;
 	CGFloat lineSpacing = _lineSpacing;
-	
+
 	for (NSUInteger i=0; i<[[attributes allKeys] count]; i++)
 	{
 		NSString *key = [[attributes allKeys] objectAtIndex:i];
@@ -467,29 +468,29 @@
 			}
 		}
 	}
-	
+
 	CTParagraphStyleSetting theSettings[] =
 	{
 		{ kCTParagraphStyleSpecifierAlignment, sizeof(CTTextAlignment), &textAlignment },
 		{ kCTParagraphStyleSpecifierLineBreakMode, sizeof(CTLineBreakMode), &lineBreakMode  },
-		{ kCTParagraphStyleSpecifierBaseWritingDirection, sizeof(CTWritingDirection), &direction }, 
+		{ kCTParagraphStyleSpecifierBaseWritingDirection, sizeof(CTWritingDirection), &direction },
 		{ kCTParagraphStyleSpecifierMinimumLineSpacing, sizeof(CGFloat), &lineSpacing }, // leading
 		{ kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(CGFloat), &lineSpacing }, // leading
 		{ kCTParagraphStyleSpecifierFirstLineHeadIndent, sizeof(CGFloat), &firstLineIndent },
-		{ kCTParagraphStyleSpecifierHeadIndent, sizeof(CGFloat), &headIndent }, 
-		{ kCTParagraphStyleSpecifierTailIndent, sizeof(CGFloat), &tailIndent }, 
-		{ kCTParagraphStyleSpecifierLineHeightMultiple, sizeof(CGFloat), &lineHeightMultiple }, 
-		{ kCTParagraphStyleSpecifierMaximumLineHeight, sizeof(CGFloat), &maxLineHeight }, 
-		{ kCTParagraphStyleSpecifierMinimumLineHeight, sizeof(CGFloat), &minLineHeight }, 
-		{ kCTParagraphStyleSpecifierParagraphSpacing, sizeof(CGFloat), &paragraphSpacing }, 
+		{ kCTParagraphStyleSpecifierHeadIndent, sizeof(CGFloat), &headIndent },
+		{ kCTParagraphStyleSpecifierTailIndent, sizeof(CGFloat), &tailIndent },
+		{ kCTParagraphStyleSpecifierLineHeightMultiple, sizeof(CGFloat), &lineHeightMultiple },
+		{ kCTParagraphStyleSpecifierMaximumLineHeight, sizeof(CGFloat), &maxLineHeight },
+		{ kCTParagraphStyleSpecifierMinimumLineHeight, sizeof(CGFloat), &minLineHeight },
+		{ kCTParagraphStyleSpecifierParagraphSpacing, sizeof(CGFloat), &paragraphSpacing },
 		{ kCTParagraphStyleSpecifierParagraphSpacingBefore, sizeof(CGFloat), &paragraphSpacingBefore }
 	};
-	
-	
+
+
 	CTParagraphStyleRef theParagraphRef = CTParagraphStyleCreate(theSettings, sizeof(theSettings) / sizeof(CTParagraphStyleSetting));
 	CFDictionaryAddValue( styleDict, kCTParagraphStyleAttributeName, theParagraphRef );
-	
-	CFAttributedStringSetAttributes( text, CFRangeMake(position, length), styleDict, 0 ); 
+
+	CFAttributedStringSetAttributes( text, CFRangeMake(position, length), styleDict, 0 );
 	CFRelease(theParagraphRef);
     CFRelease(styleDict);
 }
@@ -497,7 +498,7 @@
 - (void)applyCenterStyleToText:(CFMutableAttributedStringRef)text attributes:(NSMutableDictionary*)attributes atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
 	CFMutableDictionaryRef styleDict = ( CFDictionaryCreateMutable( (0), 0, (0), (0) ) );
-	
+
 	// direction
 	CTWritingDirection direction = kCTWritingDirectionLeftToRight;
 	// leading
@@ -514,7 +515,7 @@
 	int lineSpacing = (int)_lineSpacing;
 
     textAlignment = kCTCenterTextAlignment;
-	
+
 	CTParagraphStyleSetting theSettings[] =
 	{
 		{ kCTParagraphStyleSpecifierAlignment, sizeof(CTTextAlignment), &textAlignment },
@@ -530,10 +531,10 @@
 		{ kCTParagraphStyleSpecifierParagraphSpacing, sizeof(CGFloat), &paragraphSpacing },
 		{ kCTParagraphStyleSpecifierParagraphSpacingBefore, sizeof(CGFloat), &paragraphSpacingBefore }
 	};
-	
+
 	CTParagraphStyleRef theParagraphRef = CTParagraphStyleCreate(theSettings, sizeof(theSettings) / sizeof(CTParagraphStyleSetting));
 	CFDictionaryAddValue( styleDict, kCTParagraphStyleAttributeName, theParagraphRef );
-	
+
 	CFAttributedStringSetAttributes( text, CFRangeMake(position, length), styleDict, 0 );
 	CFRelease(theParagraphRef);
     CFRelease(styleDict);
@@ -568,7 +569,7 @@
 	{
 		NSString *value = [attributes objectForKey:key];
 		value = [value stringByReplacingOccurrencesOfString:@"'" withString:@""];
-		
+
 		if ([key caseInsensitiveCompare:@"color"] == NSOrderedSame)
 		{
 			[self applyColor:value toText:text atPosition:position withLength:length];
@@ -605,7 +606,7 @@
 			}
 		}
 	}
-	
+
 	UIFont *font = nil;
 	if ([attributes objectForKey:@"face"] && [attributes objectForKey:@"size"])
 	{
@@ -625,7 +626,7 @@
 	}
 	if (font)
 	{
-		CTFontRef customFont = CTFontCreateWithName ((__bridge CFStringRef)[font fontName], [font pointSize], NULL); 
+		CTFontRef customFont = CTFontCreateWithName ((__bridge CFStringRef)[font fontName], [font pointSize], NULL);
 		CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTFontAttributeName, customFont);
 		CFRelease(customFont);
 	}
@@ -653,7 +654,7 @@
         NSString *fontName = [NSString stringWithFormat:@"%@-BoldOblique", self.font.fontName];
         boldItalicFontRef = CTFontCreateWithName ((__bridge CFStringRef)fontName, [self.font pointSize], NULL);
     }
-    
+
     if (boldItalicFontRef) {
         CFAttributedStringSetAttribute(text, CFRangeMake(position, length), kCTFontAttributeName, boldItalicFontRef);
         CFRelease(boldItalicFontRef);
@@ -663,7 +664,7 @@
 
 - (void)applyColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
-	
+
 	if ([value rangeOfString:@"#"].location==0)
 	{
         CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -682,13 +683,13 @@
 			_color = [UIColor performSelector:colorSel];
 			CGColorRef color = [_color CGColor];
 			CFAttributedStringSetAttribute(text, CFRangeMake(position, length),kCTForegroundColorAttributeName, color);
-		}				
+		}
 	}
 }
 
 - (void)applyUnderlineColor:(NSString*)value toText:(CFMutableAttributedStringRef)text atPosition:(NSUInteger)position withLength:(NSUInteger)length
 {
-	
+
 	value = [value stringByReplacingOccurrencesOfString:@"'" withString:@""];
 	if ([value rangeOfString:@"#"].location==0) {
         CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -709,13 +710,13 @@
 			CGColorRef color = [_color CGColor];
 			CFAttributedStringSetAttribute(text, CFRangeMake(position, length),kCTUnderlineColorAttributeName, color);
 			//CGColorRelease(color);
-		}				
+		}
 	}
-	
+
 }
 
 #pragma mark -
-#pragma mark button 
+#pragma mark button
 
 - (void)onButtonTouchDown:(id)sender
 {
@@ -808,7 +809,7 @@
     return ceilf((float)height);
 }
 
-- (void)dealloc 
+- (void)dealloc
 {
     self.delegate = nil;
 }
@@ -816,39 +817,39 @@
 - (NSArray *)components
 {
 	NSScanner *scanner = [NSScanner scannerWithString:self.text];
-	[scanner setCharactersToBeSkipped:nil]; 
-	
+	[scanner setCharactersToBeSkipped:nil];
+
 	NSMutableArray *components = [NSMutableArray array];
-	
-	while (![scanner isAtEnd]) 
+
+	while (![scanner isAtEnd])
 	{
 		NSString *currentComponent;
 		BOOL foundComponent = [scanner scanUpToString:@"http" intoString:&currentComponent];
-		if (foundComponent) 
+		if (foundComponent)
 		{
 			[components addObject:currentComponent];
-			
+
 			NSString *string;
 			BOOL foundURLComponent = [scanner scanUpToString:@" " intoString:&string];
-			if (foundURLComponent) 
+			if (foundURLComponent)
 			{
 				// if last character of URL is punctuation, its probably not part of the URL
 				NSCharacterSet *punctuationSet = [NSCharacterSet punctuationCharacterSet];
 				NSInteger lastCharacterIndex = string.length - 1;
-				if ([punctuationSet characterIsMember:[string characterAtIndex:lastCharacterIndex]]) 
+				if ([punctuationSet characterIsMember:[string characterAtIndex:lastCharacterIndex]])
 				{
 					// remove the punctuation from the URL string and move the scanner back
 					string = [string substringToIndex:lastCharacterIndex];
 					[scanner setScanLocation:scanner.scanLocation - 1];
-				}        
+				}
 				[components addObject:string];
 			}
-		} 
-		else 
+		}
+		else
 		{ // first string is a link
 			NSString *string;
 			BOOL foundURLComponent = [scanner scanUpToString:@" " intoString:&string];
-			if (foundURLComponent) 
+			if (foundURLComponent)
 			{
 				[components addObject:string];
 			}
@@ -859,19 +860,19 @@
 
 + (RTLabelExtractedComponent*)extractTextStyleFromText:(NSString*)data paragraphReplacement:(NSString*)paragraphReplacement
 {
-	NSScanner *scanner = nil; 
+	NSScanner *scanner = nil;
 	NSString *text = nil;
 	NSString *tag = nil;
-	
+
 	NSMutableArray *components = [NSMutableArray array];
-	
+
 	NSUInteger last_position = 0;
 	scanner = [NSScanner scannerWithString:data];
 	while (![scanner isAtEnd])
     {
 		[scanner scanUpToString:@"<" intoString:NULL];
 		[scanner scanUpToString:@">" intoString:&text];
-		
+
 		NSString *delimiter = [NSString stringWithFormat:@"%@>", text];
 		NSUInteger position = [data rangeOfString:delimiter options:NSCaseInsensitiveSearch range:NSMakeRange(last_position, [data length] - last_position)].location;
 		if (position != NSNotFound)
@@ -884,11 +885,11 @@
            {
               data = [data stringByReplacingOccurrencesOfString:delimiter withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(position, delimiter.length)];
            }
-			
+
 			data = [data stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
 			data = [data stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
 		}
-		
+
 		if ([text rangeOfString:@"</"].location==0)
 		{
 			// end of tag
@@ -918,7 +919,7 @@
 				NSArray *pair = [[textComponents objectAtIndex:i] componentsSeparatedByString:@"="];
 				if ([pair count] > 0) {
 					NSString *key = [[pair objectAtIndex:0] lowercaseString];
-					
+
 					if ([pair count]>=2) {
 						// Trim " character
 						NSString *value = [[pair subarrayWithRange:NSMakeRange(1, [pair count] - 1)] componentsJoinedByString:@"="];
@@ -926,7 +927,7 @@
                         if (value.length > 0) {
                             value = [value stringByReplacingOccurrencesOfString:@"\"" withString:@"" options:NSLiteralSearch range:NSMakeRange([value length]-1, 1)];
                         }
-						
+
 						[attributes setObject:value forKey:key];
 					} else if ([pair count]==1) {
 						[attributes setObject:key forKey:key];
@@ -939,7 +940,7 @@
 		}
 		last_position = position;
 	}
-	
+
     return [RTLabelExtractedComponent rtLabelExtractComponentsWithTextComponent:components plainText:data];
 }
 
@@ -950,27 +951,27 @@
 	NSScanner *scanner = nil;
 	NSString *text = nil;
 	NSString *tag = nil;
-	
+
 	NSMutableArray *components = [NSMutableArray array];
-	
+
 	//set up the scanner
 	scanner = [NSScanner scannerWithString:data];
 	NSMutableDictionary *lastAttributes = nil;
-	
+
 	NSUInteger last_position = 0;
-	while([scanner isAtEnd] == NO) 
+	while([scanner isAtEnd] == NO)
 	{
 		//find start of tag
 		[scanner scanUpToString:@"<" intoString:NULL];
-		
+
 		//find end of tag
 		[scanner scanUpToString:@">" intoString:&text];
-		
+
 		NSMutableDictionary *attributes = nil;
 		//get the name of the tag
 		if([text rangeOfString:@"</"].location != NSNotFound)
 			tag = [text substringFromIndex:2]; //remove </
-		else 
+		else
 		{
 			tag = [text substringFromIndex:1]; //remove <
 			//find out if there is a space in the tag
@@ -986,12 +987,12 @@
 						[attributes setObject:[pair objectAtIndex:1] forKey:[pair objectAtIndex:0]];
 					}
 				}
-				
+
 				//remove text after a space
 				tag = [tag substringToIndex:[tag rangeOfString:@" "].location];
 			}
 		}
-		
+
 		//if not a valid tag, replace the tag with a space
 		if([valid_tags containsObject:tag] == NO)
 		{
@@ -1012,7 +1013,7 @@
 					[components addObject:[RTLabelComponent componentWithString:text2 tag:nil attributes:lastAttributes]];
 				}
 				data = [data stringByReplacingOccurrencesOfString:delimiter withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(last_position, position+delimiter.length-last_position)];
-				
+
 				last_position = position;
 			}
 			else
@@ -1028,33 +1029,33 @@
     [self setPlainText:data];
 }
 
-- (NSArray*)colorForHex:(NSString *)hexColor 
+- (NSArray*)colorForHex:(NSString *)hexColor
 {
 	hexColor = [[hexColor stringByTrimmingCharactersInSet:
 				 [NSCharacterSet whitespaceAndNewlineCharacterSet]
-				 ] uppercaseString];  
-	
-    NSRange range;  
-    range.location = 0;  
-    range.length = 2; 
-	
-    NSString *rString = [hexColor substringWithRange:range];  
-	
-    range.location = 2;  
-    NSString *gString = [hexColor substringWithRange:range];  
-	
-    range.location = 4;  
-    NSString *bString = [hexColor substringWithRange:range];  
-	
-    // Scan values  
-    unsigned int r, g, b;  
-    [[NSScanner scannerWithString:rString] scanHexInt:&r];  
+				 ] uppercaseString];
+
+    NSRange range;
+    range.location = 0;
+    range.length = 2;
+
+    NSString *rString = [hexColor substringWithRange:range];
+
+    range.location = 2;
+    NSString *gString = [hexColor substringWithRange:range];
+
+    range.location = 4;
+    NSString *bString = [hexColor substringWithRange:range];
+
+    // Scan values
+    unsigned int r, g, b;
+    [[NSScanner scannerWithString:rString] scanHexInt:&r];
     [[NSScanner scannerWithString:gString] scanHexInt:&g];
-    [[NSScanner scannerWithString:bString] scanHexInt:&b];  
-	
+    [[NSScanner scannerWithString:bString] scanHexInt:&b];
+
 	NSArray *components = [NSArray arrayWithObjects:[NSNumber numberWithFloat:((float) r / 255.0f)],[NSNumber numberWithFloat:((float) g / 255.0f)],[NSNumber numberWithFloat:((float) b / 255.0f)],[NSNumber numberWithFloat:1.0],nil];
 	return components;
-	
+
 }
 
 - (NSString*)visibleText
@@ -1077,7 +1078,7 @@
 + (NSDictionary*)preExtractTextStyle:(NSString*)data
 {
     NSString* paragraphReplacement = @"\n";
-	
+
     RTLabelExtractedComponent *component = [RTLabel extractTextStyleFromText:data paragraphReplacement:paragraphReplacement];
 	return [NSDictionary dictionaryWithObjectsAndKeys:component.textComponents, @"textComponents", component.plainText, @"plainText", nil];
 }
