@@ -277,7 +277,7 @@
 			}
 
 			NSString *value = component.attributes[@"href"];
-			if (value != nil) {
+			if (value != nil && [value isKindOfClass:[NSString class]]) {
 				value = [value stringByReplacingOccurrencesOfString:@"'" withString:@""];
 				[component.attributes setObject:value forKey:@"href"];
 				[links addObject:component];
