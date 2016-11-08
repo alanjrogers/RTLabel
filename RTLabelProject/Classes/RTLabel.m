@@ -868,7 +868,7 @@
 
 	NSUInteger last_position = 0;
 	scanner = [NSScanner scannerWithString:data];
-	while (![scanner isAtEnd])
+	while (![scanner isAtEnd] && last_position != NSNotFound)
     {
 		[scanner scanUpToString:@"<" intoString:NULL];
 		[scanner scanUpToString:@">" intoString:&text];
