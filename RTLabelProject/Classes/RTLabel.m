@@ -83,7 +83,7 @@
 {
 	NSMutableString *desc = [NSMutableString string];
 	[desc appendFormat:@"text: %@", self.text];
-	[desc appendFormat:@", position: %i", self.position];
+	[desc appendFormat:@", position: %lu", (unsigned long)self.position];
 	if (self.tagLabel) [desc appendFormat:@", tag: %@", self.tagLabel];
 	if (self.attributes) [desc appendFormat:@", attributes: %@", self.attributes];
 	return desc;
@@ -421,19 +421,19 @@
 		{
 			if ([value caseInsensitiveCompare:@"left"] == NSOrderedSame)
 			{
-				textAlignment = kCTLeftTextAlignment;
+				textAlignment = kCTTextAlignmentLeft;
 			}
 			else if ([value caseInsensitiveCompare:@"right"] == NSOrderedSame)
 			{
-				textAlignment = kCTRightTextAlignment;
+				textAlignment = kCTTextAlignmentRight;
 			}
 			else if ([value caseInsensitiveCompare:@"justify"] == NSOrderedSame)
 			{
-				textAlignment = kCTJustifiedTextAlignment;
+				textAlignment = kCTTextAlignmentJustified;
 			}
 			else if ([value caseInsensitiveCompare:@"center"] == NSOrderedSame)
 			{
-				textAlignment = kCTCenterTextAlignment;
+				textAlignment = kCTTextAlignmentCenter;
 			}
 		}
 		else if ([key caseInsensitiveCompare:@"indent"] == NSOrderedSame)
@@ -514,14 +514,14 @@
 	int lineBreakMode = _lineBreakMode;
 	int lineSpacing = (int)_lineSpacing;
 
-    textAlignment = kCTCenterTextAlignment;
+    textAlignment = kCTTextAlignmentCenter;
 
 	CTParagraphStyleSetting theSettings[] =
 	{
 		{ kCTParagraphStyleSpecifierAlignment, sizeof(CTTextAlignment), &textAlignment },
 		{ kCTParagraphStyleSpecifierLineBreakMode, sizeof(CTLineBreakMode), &lineBreakMode  },
 		{ kCTParagraphStyleSpecifierBaseWritingDirection, sizeof(CTWritingDirection), &direction },
-		{ kCTParagraphStyleSpecifierLineSpacing, sizeof(CGFloat), &lineSpacing },
+		{ kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(CGFloat), &lineSpacing },
 		{ kCTParagraphStyleSpecifierFirstLineHeadIndent, sizeof(CGFloat), &firstLineIndent },
 		{ kCTParagraphStyleSpecifierHeadIndent, sizeof(CGFloat), &headIndent },
 		{ kCTParagraphStyleSpecifierTailIndent, sizeof(CGFloat), &tailIndent },
