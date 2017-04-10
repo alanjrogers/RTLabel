@@ -232,7 +232,7 @@
 
 	for (RTLabelComponent *component in textComponents)
 	{
-		NSUInteger index = [textComponents indexOfObject:component];
+		NSInteger index = [textComponents indexOfObject:component];
 		component.componentIndex = index;
 
 		if ([component.tagLabel caseInsensitiveCompare:@"i"] == NSOrderedSame)
@@ -366,7 +366,11 @@
 					[button setBackgroundColor:[UIColor colorWithWhite:0 alpha:0]];
 					[button setComponentIndex:linkableComponents.componentIndex];
 
-					[button setUrl:[NSURL URLWithString:[linkableComponents.attributes objectForKey:@"href"]]];
+                    NSString *href = linkableComponents.attributes[@"href"];
+                    NSURL *hrefURL = href == nil ? nil : [NSURL URLWithString:href];
+                    if (hrefURL != nil) {
+                        [button setUrl:hrefURL];
+                    }
 					[button addTarget:self action:@selector(onButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
 					[button addTarget:self action:@selector(onButtonTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
 					[button addTarget:self action:@selector(onButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
