@@ -391,7 +391,9 @@
 	CFRelease(styleDict1);
 	CFRelease(styleDict);
 	CFRelease(framesetter);
-	CTFrameDraw(frame, context);
+    if (context != nil) {
+        CTFrameDraw(frame, context);
+    }
     CFRelease(frame);
 }
 
