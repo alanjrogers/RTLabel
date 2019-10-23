@@ -221,8 +221,7 @@
 
 	[self applyParagraphStyleToText:attrString attributes:nil atPosition:0 withLength:(int)CFAttributedStringGetLength(attrString)];
 
-
-	CTFontRef thisFont = CTFontCreateWithName ((__bridge CFStringRef)[self.font fontName], [self.font pointSize], NULL);
+	CTFontRef thisFont = CTFontCreateWithFontDescriptor((__bridge CTFontDescriptorRef)self.font.fontDescriptor, 0, nil);
 	CFAttributedStringSetAttribute(attrString, CFRangeMake(0, CFAttributedStringGetLength(attrString)), kCTFontAttributeName, thisFont);
 
 	NSMutableArray *links = [NSMutableArray array];
